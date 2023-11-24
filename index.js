@@ -33,6 +33,7 @@ async function run() {
 
     const roomCollection = client.db("buildDB").collection("rooms");
     const userCollection = client.db("buildDB").collection("users");
+    const agreementCollection = client.db("buildDB").collection("agreement");
 
 
     app.get('/rooms', async (req, res) => {
@@ -51,6 +52,13 @@ async function run() {
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
+
+
+    app.post('/agreement', async (req, res) => {
+        const agreementItem = req.body;
+        const result = await agreementCollection.insertOne(agreementItem);
+        res.send(result);
+      });
 
 
     // Send a ping to confirm a successful connection
