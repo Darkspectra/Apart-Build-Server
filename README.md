@@ -1,0 +1,1 @@
+This is server side for "apart-build" website
