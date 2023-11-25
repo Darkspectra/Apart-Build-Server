@@ -34,6 +34,7 @@ async function run() {
     const roomCollection = client.db("buildDB").collection("rooms");
     const userCollection = client.db("buildDB").collection("users");
     const agreementCollection = client.db("buildDB").collection("agreement");
+    const announcementCollection = client.db("buildDB").collection("announcement");
 
 
     app.get('/rooms', async (req, res) => {
@@ -54,6 +55,12 @@ async function run() {
       });
 
 
+    app.get('/announcement', async (req, res) => {
+        const result = await announcementCollection.find().toArray();
+        res.send(result);
+      });
+
+
     app.post('/users', async (req, res) => {
       const user = req.body;
       const query = { email: user.email }
@@ -69,6 +76,12 @@ async function run() {
     app.post('/agreement', async (req, res) => {
         const agreementItem = req.body;
         const result = await agreementCollection.insertOne(agreementItem);
+        res.send(result);
+      });
+
+    app.post('/announcement', async (req, res) => {
+        const announcementItem = req.body;
+        const result = await announcementCollection.insertOne(announcementItem);
         res.send(result);
       });
 
