@@ -14,7 +14,7 @@ app.use(express.json());
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bezlu4y.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -47,6 +47,20 @@ async function run() {
         const result = await userCollection.find().toArray();
         res.send(result);
       });
+
+    app.get("/users/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await userCollection.findOne(query);
+      res.send(result);
+    })  
+
+    app.get("/agreement/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await agreementCollection.findOne(query);
+      res.send(result);
+    })  
 
 
     app.get('/agreement', async (req, res) => {
@@ -84,6 +98,36 @@ async function run() {
         const result = await announcementCollection.insertOne(announcementItem);
         res.send(result);
       });
+
+
+
+      app.put("/users/:id", async(req, res)=>{
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)};
+        const options = {upsert:true};
+        const updatedRole = req.body;
+        const role = {
+          $set: {
+            role: updatedRole.role
+          }
+        }
+        const result = await userCollection.updateOne(filter, role, options);
+        res.send(result);
+      })
+
+      app.put("/agreement/:id", async(req, res)=>{
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)};
+        const options = {upsert:true};
+        const updatedStatus = req.body;
+        const role = {
+          $set: {
+            status: updatedStatus.status
+          }
+        }
+        const result = await userCollection.updateOne(filter, role, options);
+        res.send(result);
+      })
 
 
     // Send a ping to confirm a successful connection
