@@ -35,6 +35,7 @@ async function run() {
     const userCollection = client.db("buildDB").collection("users");
     const agreementCollection = client.db("buildDB").collection("agreement");
     const announcementCollection = client.db("buildDB").collection("announcement");
+    const paymentCollection = client.db("buildDB").collection("payments");
 
 
     app.get('/rooms', async (req, res) => {
@@ -96,6 +97,12 @@ async function run() {
     app.post('/announcement', async (req, res) => {
         const announcementItem = req.body;
         const result = await announcementCollection.insertOne(announcementItem);
+        res.send(result);
+      });
+
+    app.post('/makePayment', async (req, res) => {
+        const PaymentItem = req.body;
+        const result = await paymentCollection.insertOne(PaymentItem);
         res.send(result);
       });
 
