@@ -125,7 +125,7 @@ async function run() {
             status: updatedStatus.status
           }
         }
-        const result = await userCollection.updateOne(filter, role, options);
+        const result = await agreementCollection.updateOne(filter, role, options);
         res.send(result);
       })
 
