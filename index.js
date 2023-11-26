@@ -35,6 +35,7 @@ async function run() {
     const agreementCollection = client.db("buildDB").collection("agreement");
     const announcementCollection = client.db("buildDB").collection("announcement");
     const paymentCollection = client.db("buildDB").collection("payments");
+    const couponCollection = client.db("buildDB").collection("coupons");
 
 
     app.get('/rooms', async (req, res) => {
@@ -80,6 +81,11 @@ async function run() {
         res.send(result);
       });
 
+    app.get('/createCoupon', async (req, res) => {
+        const result = await couponCollection.find().toArray();
+        res.send(result);
+      });
+
 
     app.get('/payments/:email', async (req, res) => {
       const email = req.params.email;
@@ -87,6 +93,14 @@ async function run() {
       const result = await paymentCollection.find(query).toArray();
       res.send(result);
     });
+
+
+    app.delete("/coupon/:id", async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await couponCollection.deleteOne(query)
+      res.send(result);
+    })
 
 
     app.post('/users', async (req, res) => {
@@ -116,6 +130,12 @@ async function run() {
     app.post('/makePayment', async (req, res) => {
         const PaymentItem = req.body;
         const result = await paymentCollection.insertOne(PaymentItem);
+        res.send(result);
+      });
+
+    app.post('/createCoupon', async (req, res) => {
+        const couponItem = req.body;
+        const result = await couponCollection.insertOne(couponItem);
         res.send(result);
       });
 
