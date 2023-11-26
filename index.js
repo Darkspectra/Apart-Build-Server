@@ -1,9 +1,8 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-// const jwt = require('jsonwebtoken');
 require('dotenv').config()
-// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 const port = process.env.PORT || 5000;
 
 // middleware
@@ -76,6 +75,12 @@ async function run() {
       });
 
 
+    app.get('/makePayment', async (req, res) => {
+        const result = await paymentCollection.find().toArray();
+        res.send(result);
+      });
+
+
     app.post('/users', async (req, res) => {
       const user = req.body;
       const query = { email: user.email }
@@ -134,6 +139,39 @@ async function run() {
         }
         const result = await agreementCollection.updateOne(filter, role, options);
         res.send(result);
+      })
+
+
+
+      app.put("/makePayment/:id", async(req, res)=>{
+        const id = req.params.id;
+        const filter = {_id: new ObjectId(id)};
+        const options = {upsert:true};
+        const updatedTran = req.body;
+        const role = {
+          $set: {
+            transaction: updatedTran.transaction
+          }
+        }
+        const result = await paymentCollection.updateOne(filter, role, options);
+        res.send(result);
+      })
+
+
+
+      app.post('/create-payment-intent', async(req, res) => {
+        const { price } = req.body;
+        const amount = parseInt(price * 100);
+  
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount,
+          currency: 'usd',
+          payment_method_types: ['card']
+        });
+        res.send({
+          clientSecret: paymentIntent.client_secret
+        })
+  
       })
 
 
