@@ -81,6 +81,14 @@ async function run() {
       });
 
 
+    app.get('/payments/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await paymentCollection.find(query).toArray();
+      res.send(result);
+    });
+
+
     app.post('/users', async (req, res) => {
       const user = req.body;
       const query = { email: user.email }
